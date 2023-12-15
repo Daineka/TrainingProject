@@ -1,0 +1,2 @@
+# TrainingProject
+For Maksim Somau
