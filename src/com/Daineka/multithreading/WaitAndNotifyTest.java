@@ -14,39 +14,45 @@ public class WaitAndNotifyTest {
             thread1.join();
             thread2.join();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
 
-class WaitAndNotify{
-    public void produce(){
-        synchronized (this){
+class WaitAndNotify {
+    private boolean run = true;
+
+    public void produce() {
+        synchronized (this) {
             try {
-                for (int i = 0; i < 1000; i++) {
+                for (int i = 0; i < 10; i++) {
+                    while (!run) {
+                        wait();
+                    }
                     System.out.print("Hello ");
-                    wait();
+                    run = false;
                     notify();
                 }
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
     }
 
-    public void consume(){
+    public void consume() {
         try {
-            synchronized (this){
-                Thread.sleep(10);
-
-                for (int i = 0; i < 1000; i++) {
+            synchronized (this) {
+                for (int i = 0; i < 10; i++) {
+                    while (run) {
+                        wait();
+                    }
                     System.out.println("world!");
+                    run = true;
                     notify();
-                    wait();
                 }
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
